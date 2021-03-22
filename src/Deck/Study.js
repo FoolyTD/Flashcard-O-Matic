@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useRouteMatch, useHistory } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { readDeck } from "../utils/api/index";
 
 export default function Study({ decks }) {
@@ -9,13 +9,10 @@ export default function Study({ decks }) {
   const [cards, setCards] = useState({});
 
   const history = useHistory();
-  const route = useRouteMatch();
-  const deckId = route.params.deckId;
+  const {deckId} = useParams();
 
   useEffect(() => {
-    const aborter = new AbortController();
-
-    readDeck(deckId, aborter.signal).then((data) => {
+    readDeck(deckId).then((data) => {
       setDeck(data);
       setCards(data.cards);
     });

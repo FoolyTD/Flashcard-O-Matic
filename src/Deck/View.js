@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { readDeck } from "../utils/api/index";
-import { Link, useRouteMatch, useHistory } from "react-router-dom";
-import Card from "./Card";
+import { Link, useParams, useHistory } from "react-router-dom";
+import Card from "../Card/Card";
 import { deleteDeck } from "../utils/api/index";
 
 export default function View() {
-  const [deck, setDeck] = useState({});
-  const [cards, setCards] = useState({});
+  const [deck, setDeck] = useState({cards:[]});
+  const [cards, setCards] = useState({front:"",back:""});
 
   const history = useHistory();
-  const route = useRouteMatch();
-  const deckId = route.params.deckId;
+  const {deckId} = useParams();
 
   const handleDelete = () => {
     const response = window.confirm("Are you sure you want to delete?");
     if (response) {
       deleteDeck(deckId);
-      history.push('/')
+      history.push('/');
     }
   }
 
   useEffect(() => {
-    const aborter = new AbortController();
-
-    readDeck(deckId, aborter.signal).then((data) => {
+    readDeck(deckId).then((data) => {
       setDeck(data);
       setCards(data.cards);
     });

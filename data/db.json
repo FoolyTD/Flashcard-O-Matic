@@ -71,8 +71,8 @@
       "id": 8
     },
     {
-      "front": "Back ",
-      "back": "Front",
+      "front": "This is the back.",
+      "back": "This is the front.",
       "deckId": 4,
       "id": 9
     },

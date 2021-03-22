@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useRouteMatch, Link } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { readDeck } from "../utils/api/index";
 import CardForm from "./CardForm";
 
 export default function CreateCard() {
-  const [deck, setDeck] = useState({});
-  const route = useRouteMatch();
-  const { deckId } = route.params;
+  const [deck, setDeck] = useState({cards:[]});
+  // const route = useRouteMatch();
+  const history = useHistory();
+  const { deckId } = useParams();
+  // const { deckId } = route.params;
 
   useEffect(() => {
-    const aborter = new AbortController();
-
-    readDeck(deckId, aborter.signal).then((deck) => setDeck(deck));
+    readDeck(deckId).then(setDeck);
   }, [deckId]);
+
+  function historyHandler() {
+    history.push(`/decks/${deckId}`);
+  }
 
   return (
     <div>
@@ -30,7 +34,7 @@ export default function CreateCard() {
         </ol>
       </nav>
       <h3>{deck.name}: Add Card</h3>
-      <CardForm deck={deck} />
+      <CardForm onHistory={historyHandler} deck={deck} />
     </div>
   );
 }

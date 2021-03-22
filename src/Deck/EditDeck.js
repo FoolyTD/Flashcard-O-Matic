@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Form from "./Form";
 import { readDeck } from "../utils/api/index";
 
 export default function EditDeck() {
-  const [deck, setDeck] = useState({});
-  const route = useRouteMatch();
-  const deckId = parseInt(route.params.deckId);
+  const [deck, setDeck] = useState({ name: "", description: "" });
+  const {deckId} = useParams();
 
   useEffect(() => {
-    const aborter = new AbortController();
-
-    readDeck(deckId, aborter.signal).then(setDeck);
-    // can also use .then(deck=>setDec(deck))
+    readDeck(deckId).then(setDeck);
   }, [deckId]);
 
   return (

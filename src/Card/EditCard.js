@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useRouteMatch, Link } from "react-router-dom";
+import { useParams, Link, useHistory } from "react-router-dom";
 import { readCard, readDeck } from "../utils/api/index";
 import CardForm from "../Card/CardForm";
 
 export default function EditCard() {
-  const [deck, setDeck] = useState({});
-  const [card, setCard] = useState({});
-  const route = useRouteMatch();
-  const { deckId, cardId } = route.params;
+  const [deck, setDeck] = useState({cards:[]});
+  const [card, setCard] = useState({ front: "", back: "" });
+  const { deckId, cardId } = useParams();
+
+  const history = useHistory();
 
   useEffect(() => {
-    const aborter = new AbortController();
+    readDeck(deckId).then(setDeck);
 
-    readDeck(deckId, aborter.signal)
-    .then((deck) => {
-        setDeck(deck);
-    })
-    readCard(cardId,aborter.signal)
-    .then(redCard=>setCard(redCard))
-  }, [deckId]);
+    readCard(cardId).then(setCard)
+  }, [deckId,cardId]);
+
+  function historyHandler() {
+    history.push(`/decks/${deckId}`);
+  }
 
   return (
     <div>
@@ -36,7 +36,7 @@ export default function EditCard() {
       </ol>
     </nav>
     <h3>Edit Card</h3>
-    {card.front && <CardForm card={card} deck={deck} />}
+    {card.front && <CardForm onHistory={historyHandler} card={card} deck={deck} />}
   </div>
   );
 }
